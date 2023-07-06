@@ -1,8 +1,8 @@
-import { Express } from "express";
+import express from "express";
 import { MongoClient } from "mongodb";
 import cors from "cors";
-import Joi from "joi";
 import dotenv from "dotenv";
+import { signUp } from "./controllers/authControllers.js";
 
 //Criação do app
 const app = express();
@@ -21,12 +21,13 @@ try {
   console.log(err.message);
 }
 
-const db = mongoClient.db();
+export const db = mongoClient.db();
 
 //Funções (endpoints) abaixo
-
+app.post("/sign-up", signUp);
 
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`O servidor está rodando na porta ${PORT}`);
 });
+
