@@ -14,7 +14,12 @@ export async function signUp(req, res) {
   const validate = schemaSignUp.validate(req.body, { abortEarly: false });
 
   if (validate.error) {
-    const errors = validate.error.details.map((detail) => detail.message);
+    let errors = "";
+    validate.error.details.forEach((detail, index) => {
+      if (index !== validate.error.details.length - 1)
+        errors += `${detail.message}\n`;
+      else errors += detail.message;
+    });
     return res.status(422).send(errors);
   }
 
@@ -45,7 +50,12 @@ export async function signIn(req, res) {
   const validate = schemaSignIn.validate(req.body, { abortEarly: false });
 
   if (validate.error) {
-    const errors = validate.error.details.map((detail) => detail.message);
+    let errors = "";
+    validate.error.details.forEach((detail, index) => {
+      if (index !== validate.error.details.length - 1)
+        errors += `${detail.message}\n`;
+      else errors += detail.message;
+    });
     return res.status(422).send(errors);
   }
   try {
@@ -57,10 +67,11 @@ export async function signIn(req, res) {
 
     await db.collection("session").deleteMany({ idUser: user._id });
     const token = uuid();
+    const body = { name: user.name, token };
     await db
       .collection("session")
       .insertOne({ token: token, idUser: user._id });
-    res.status(200).send(token);
+    res.status(200).send(body);
   } catch (err) {
     res.status(500).send(err.message);
   }
