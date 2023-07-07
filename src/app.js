@@ -3,6 +3,7 @@ import { MongoClient } from "mongodb";
 import cors from "cors";
 import dotenv from "dotenv";
 import { signUp, signIn } from "./controllers/authControllers.js";
+import { getTransations } from "./controllers/transationControllers.js";
 
 //Criação do app
 const app = express();
@@ -28,6 +29,8 @@ export const db = mongoClient.db();
 app.post("/sign-up", signUp);
 
 app.post("/sign-in", signIn);
+
+app.get("/transations", getTransations)
 
 const PORT = 5000;
 app.listen(PORT, () => {
