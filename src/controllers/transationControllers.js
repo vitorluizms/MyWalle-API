@@ -9,17 +9,62 @@ export async function getTransations(req, res) {
 
   try {
     const user = await db.collection("session").findOne({ token });
+    if (!user) return res.status(401).send("Faça login!");
     const transations = await db
       .collection("transations")
       .find({ idUser: user.idUser })
       .toArray();
-    const body = {
-      date: transations.date,
-      description: transations.description,
-      value: transations.value,
-      type: transations.type,
-    };
+    const body = transations.map((transation) => {
+      return {
+        date: transation.date,
+        description: transation.description,
+        value: transation.value,
+        type: transation.type,
+      };
+    });
     res.status(200).send(body);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
+
+export async function createTransation(req, res) {
+  const { description, value } = req.body;
+  const { type } = req.params;
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "");
+
+  if (!token) return res.status(401).send("Token não enviado");
+
+  const schemaTransation = Joi.object({
+    value: Joi.number().precision(2).required(),
+    type: Joi.string().valid(":withDrawal", ":deposit").required(),
+    description: Joi.string().required(),
+  });
+
+  const obj = { value, type, description };
+  const validate = schemaTransation.validate(obj, { abortEarly: false });
+  if (validate.error) {
+    let errors = "";
+    validate.error.details.forEach((detail, index) => {
+      if (index !== validate.error.details.length - 1)
+        errors += `${detail.message}\n`;
+      else errors += detail.message;
+    });
+    return res.status(422).send(errors);
+  }
+
+  try {
+    const user = await db.collection("session").findOne({ token });
+    if (!user) return res.status(401).send("Faça login!");
+    await db.collection("transations").insertOne({
+      idUser: user.idUser,
+      value,
+      description,
+      type: type.replace(/:/, ""),
+      date: Date.now(),
+    });
+    res.sendStatus(200);
   } catch (err) {
     res.status(500).send(err.message);
   }
