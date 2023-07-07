@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { db } from "../app.js";
 import Joi from "joi";
 
@@ -62,7 +63,7 @@ export async function createTransation(req, res) {
       value,
       description,
       type: type.replace(/:/, ""),
-      date: Date.now(),
+      date: dayjs().locale("pt-br").format("DD/MM"),
     });
     res.sendStatus(200);
   } catch (err) {
