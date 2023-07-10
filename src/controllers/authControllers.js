@@ -1,6 +1,6 @@
 import Joi from "joi";
 import bcrypt from "bcrypt";
-import { db } from "../app.js";
+import { db } from "../database/database.connection.js";
 import { v4 as uuid } from "uuid";
 import schemaSignUp from "../schemas/auth.schemas.js";
 

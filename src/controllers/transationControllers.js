@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { db } from "../app.js";
+import { db } from "../database/database.connection.js";
 import schemaTransation from "../schemas/transations.schema.js";
 
 export async function getTransations(req, res) {
