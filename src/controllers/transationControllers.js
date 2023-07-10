@@ -1,16 +1,10 @@
 import dayjs from "dayjs";
 import { db } from "../database/database.connection.js";
-import schemaTransation from "../schemas/transations.schema.js";
 
 export async function getTransations(req, res) {
-  const { authorization } = req.headers;
-  const token = authorization?.replace("Bearer ", "");
-
-  if (!token) return res.status(401).send("Token não enviado");
+  const { user } = res.locals;
 
   try {
-    const user = await db.collection("session").findOne({ token });
-    if (!user) return res.status(401).send("Faça login!");
     const transations = await db
       .collection("transations")
       .find({ idUser: user.idUser })
@@ -32,26 +26,9 @@ export async function getTransations(req, res) {
 export async function createTransation(req, res) {
   const { description, value } = req.body;
   const { type } = req.params;
-  const { authorization } = req.headers;
-  const token = authorization?.replace("Bearer ", "");
-
-  if (!token) return res.status(401).send("Token não enviado");
-
-  const obj = { value, type, description };
-  const validate = schemaTransation.validate(obj, { abortEarly: false });
-  if (validate.error) {
-    let errors = "";
-    validate.error.details.forEach((detail, index) => {
-      if (index !== validate.error.details.length - 1)
-        errors += `${detail.message}\n`;
-      else errors += detail.message;
-    });
-    return res.status(422).send(errors);
-  }
+  const { user } = res.locals;
 
   try {
-    const user = await db.collection("session").findOne({ token });
-    if (!user) return res.status(401).send("Faça login!");
     await db.collection("transations").insertOne({
       idUser: user.idUser,
       value,
