@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { db } from "../app.js";
-import Joi from "joi";
+import schemaTransation from "../schemas/transations.schema.js";
 
 export async function getTransations(req, res) {
   const { authorization } = req.headers;
@@ -36,12 +36,6 @@ export async function createTransation(req, res) {
   const token = authorization?.replace("Bearer ", "");
 
   if (!token) return res.status(401).send("Token não enviado");
-
-  const schemaTransation = Joi.object({
-    value: Joi.number().precision(2).required(),
-    type: Joi.string().valid(":withDrawal", ":deposit").required(),
-    description: Joi.string().required(),
-  });
 
   const obj = { value, type, description };
   const validate = schemaTransation.validate(obj, { abortEarly: false });

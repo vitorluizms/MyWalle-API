@@ -2,14 +2,10 @@ import Joi from "joi";
 import bcrypt from "bcrypt";
 import { db } from "../app.js";
 import { v4 as uuid } from "uuid";
+import schemaSignUp from "../schemas/auth.schemas.js";
 
 export async function signUp(req, res) {
   const { name, email, password } = req.body;
-  const schemaSignUp = Joi.object({
-    name: Joi.string().required(),
-    email: Joi.string().email().required(),
-    password: Joi.string().min(3).required(),
-  });
 
   const validate = schemaSignUp.validate(req.body, { abortEarly: false });
 
