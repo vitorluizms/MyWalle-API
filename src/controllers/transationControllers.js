@@ -45,8 +45,11 @@ export async function createTransation(req, res) {
 
 export async function deleteTransation(req, res) {
   const { id } = req.params;
+  console.log(id);
   try {
-    const transation = await db.collection("transations").findOne({ _id: id });
+    const transation = await db
+      .collection("transations")
+      .findOne({ _id: id.replace(/:/, "") });
     if (!transation) {
       return res.status(404).send("Transação inexistente!");
     }
