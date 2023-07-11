@@ -11,6 +11,7 @@ export async function getTransations(req, res) {
       .toArray();
     const body = transations.map((transation) => {
       return {
+        id: transation._id,
         date: transation.date,
         description: transation.description,
         value: transation.value,
@@ -37,6 +38,20 @@ export async function createTransation(req, res) {
       date: dayjs().locale("pt-br").format("DD/MM"),
     });
     res.sendStatus(200);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
+
+export async function deleteTransation(req, res) {
+  const { id } = req.body;
+  try {
+    const transation = await db.collection("transations").findOne({ _id: id });
+    if (!transation) {
+      return res.status(404).send("Transação inexistente!");
+    }
+    await db.collection("transations").deleteOne(transation);
+    res.status(202).send("Transação deletada!");
   } catch (err) {
     res.status(500).send(err.message);
   }

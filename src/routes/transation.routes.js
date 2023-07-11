@@ -1,10 +1,14 @@
 import { Router } from "express";
 import {
   createTransation,
+  deleteTransation,
   getTransations,
 } from "../controllers/transationControllers.js";
 import schemaTransation from "../schemas/transations.schema.js";
-import { validateTransation } from "../middlewares/validateSchema.js";
+import {
+  validateDelete,
+  validateTransation,
+} from "../middlewares/validateSchema.js";
 import validateAuth from "../middlewares/validateAuth.js";
 
 const transationRouter = Router();
@@ -16,5 +20,6 @@ transationRouter.post(
   validateTransation(schemaTransation),
   createTransation
 );
+transationRouter.delete("/transation", validateDelete, deleteTransation);
 
 export default transationRouter;
