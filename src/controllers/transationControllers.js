@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { db } from "../database/database.connection.js";
+import { ObjectId } from "mongodb";
 
 export async function getTransations(req, res) {
   const { user } = res.locals;
@@ -49,7 +50,7 @@ export async function deleteTransation(req, res) {
   try {
     const transation = await db
       .collection("transations")
-      .findOne({ _id: id.replace(/:/, "") });
+      .findOne({ _id: new ObjectId(id.replace(/:/, "")) });
     if (!transation) {
       return res.status(404).send("Transação inexistente!");
     }
