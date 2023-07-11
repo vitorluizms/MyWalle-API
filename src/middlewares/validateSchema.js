@@ -39,19 +39,3 @@ export function validateTransation(schema) {
     next();
   };
 }
-
-export function validateDelete(req, res, next) {
-  const _id = Joi.string().required();
-  const validate = _id.validate(req.body, { abortEarly: false });
-  if (validate.error) {
-    let errors = "";
-    validate.error.details.forEach((detail, index) => {
-      if (index !== validate.error.details.length - 1)
-        errors += `${detail.message}\n`;
-      else errors += detail.message;
-    });
-    return res.status(422).send(errors);
-  }
-
-  next();
-}

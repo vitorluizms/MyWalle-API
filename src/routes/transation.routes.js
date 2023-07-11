@@ -5,10 +5,7 @@ import {
   getTransations,
 } from "../controllers/transationControllers.js";
 import schemaTransation from "../schemas/transations.schema.js";
-import {
-  validateDelete,
-  validateTransation,
-} from "../middlewares/validateSchema.js";
+import { validateTransation } from "../middlewares/validateSchema.js";
 import validateAuth from "../middlewares/validateAuth.js";
 
 const transationRouter = Router();
@@ -20,6 +17,6 @@ transationRouter.post(
   validateTransation(schemaTransation),
   createTransation
 );
-transationRouter.delete("/transation/:id", validateDelete, deleteTransation);
+transationRouter.delete("/transation/:id", deleteTransation);
 
 export default transationRouter;
