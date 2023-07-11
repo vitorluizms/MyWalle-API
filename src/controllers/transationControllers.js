@@ -44,7 +44,7 @@ export async function createTransation(req, res) {
 }
 
 export async function deleteTransation(req, res) {
-  const { id } = req.body;
+  const { id } = req.params;
   try {
     const transation = await db.collection("transations").findOne({ _id: id });
     if (!transation) {
