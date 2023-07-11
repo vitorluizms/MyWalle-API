@@ -20,6 +20,6 @@ transationRouter.post(
   validateTransation(schemaTransation),
   createTransation
 );
-transationRouter.delete("/transationdel", validateDelete, deleteTransation);
+transationRouter.delete("/transation", validateDelete, deleteTransation);
 
 export default transationRouter;
